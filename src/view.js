@@ -16,6 +16,8 @@ export class BoardView {
     this.controller = controller;
     this.commands = commands;
 
+    this._listeners = new Map();
+
     this.p1 = +(localStorage.getItem('c4:p1')||0);
     this.p2 = +(localStorage.getItem('c4:p2')||0);
 
@@ -52,6 +54,27 @@ export class BoardView {
     this._updateScores();
   }
 
+  on(eventName, handler) {
+    if (!this._listeners.has(eventName)) this._listeners.set(eventName, new Set());
+    this._listeners.get(eventName).add(handler);
+    return () => this.off(eventName, handler); // allows for unsubscribing if needed
+  }
+
+  off(eventName, handler) {
+    const s = this._listeners.get(eventName);
+    if (!s) return;
+    s.delete(handler);
+    if (s.size === 0) this._listeners.delete(eventName);
+  }
+
+  emit(eventName, data) {
+    const s = this._listeners.get(eventName);
+    if (!s) return;
+    Array.from(s).forEach(fn => {
+      try { fn(data); } catch (e) { console.error('View listener error', e); }
+    });
+  }
+
   _wireEvents() {
   this.root.addEventListener('click', (e) => {
     const colEl = e.target.closest('.col');
@@ -63,9 +86,15 @@ export class BoardView {
     } else {
       console.warn('CommandManager not implemented yet');
     }
+
+    // Notify subscribers that a column was clicked
+    this.emit('place', { col });
   });
 
-  this.resetBtn.addEventListener('click', () => this.controller.reset());
+    this.resetBtn.addEventListener('click', () => {
+      this.controller.reset();
+      this.emit('reset');
+    });
   if (this.undoBtn) {
     this.undoBtn.addEventListener('click', () => {
       if (this.commands?.undo) {
@@ -73,6 +102,7 @@ export class BoardView {
       } else {
         console.warn('Undo not implemented yet');
       }
+      this.emit('undo');
     });
   }
 
