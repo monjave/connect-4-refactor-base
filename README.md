@@ -30,11 +30,11 @@ This skeleton sets up the Connect-4 refactor project with **clear module boundar
 
 ### Command
 `execute(controller)`, `undo(controller)`  
-➡ delegates all logic to the Controller (no DOM or board access)
+-> delegates all logic to the Controller (no DOM or board access)
 
 ### Command Manager
 `executePlace(col)`, `undo()`  
-➡ manages a stack of `PlaceDisc` commands for undo/redo functionality
+-> manages a stack of `PlaceDisc` commands for undo/redo functionality
 
 ---
 
