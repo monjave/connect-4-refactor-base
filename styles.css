@@ -1,0 +1,37 @@
+
+:root{
+  --cell: 64px;
+  --gap: 6px;
+}
+*{ box-sizing: border-box; }
+body{ font-family: system-ui, Arial, sans-serif; margin: 0; padding: 16px; }
+header{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+.score{ display:flex; gap:16px; }
+.controls{ display:flex; gap:8px; }
+.board{
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(7, var(--cell));
+  grid-auto-rows: var(--cell);
+  gap: var(--gap);
+  align-items: center;
+}
+.cell{
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 50%;
+  border: 2px solid #333;
+  display:flex; align-items:center; justify-content:center;
+  background: #f2f2f2;
+  cursor: pointer;
+}
+.cell.p1{ background: #ff5959; }
+.cell.p2{ background: #4b8cff; }
+.top{
+  grid-column: 1 / -1;
+  display:grid;
+  grid-template-columns: repeat(7, var(--cell));
+  gap: var(--gap);
+}
+.col{ height: 24px; background:#ddd; cursor:pointer; border-radius: 4px; }
+.col:hover{ background:#bbb; }

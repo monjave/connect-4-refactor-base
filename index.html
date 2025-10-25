@@ -1,26 +1,59 @@
+
 <!doctype html>
+<html lang="en">
 <head>
-  <title>Connect 4</title>
-  <link href="connect4.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Cousine&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Connect 4 — Refactor Skeleton</title>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-
-<div id="game">
-  <h1>CONNECT 4</h1>
-  <table id="board"></table>
-  <button id="restart-button">Restart Game</button>
-  <div id="turn-notifier"><span id='turn'></span> turn!</div>
-  <div id="scoreboard">
-    <div>Red Wins: <span id='p1Wins'></span>
+  <header>
+    <h1 id="title">Connect 4</h1>
+    <div class="score">
+      <span>Player 1: <strong id="p1">0</strong></span>
+      <span>Player 2: <strong id="p2">0</strong></span>
+      <span class="turn">Turn: <strong id="turn">1</strong></span>
     </div>
-    <div>Blue Wins: <span id="p2Wins"></span>
+    <div class="controls">
+      <button id="reset">Reset</button>
+      <button id="undo">Undo</button>
     </div>
-    <button id="reset-button">Reset Scoreboard</button>
-  </div>
-</div>
+  </header>
 
-<script src="connect4.js"></script>
+  <main>
+    <div id="board" class="board" aria-label="Connect 4 board"></div>
+  </main>
 
+  <script type="module">
+    import { GameController } from './src/controller.js';
+    import { FourInARowStrategy } from './src/win_strategy.js';
+    import { BoardView } from './src/view.js';
+    import { CommandManager } from './src/command_manager.js';
+
+    const controller = new GameController({
+      rows: 6,
+      cols: 7,
+      winStrategy: new FourInARowStrategy()
+    });
+
+    const commands = new CommandManager(controller);
+
+    const view = new BoardView({
+      root: document.querySelector('#board'),
+      titleEl: document.querySelector('#title'),
+      p1El: document.querySelector('#p1'),
+      p2El: document.querySelector('#p2'),
+      turnEl: document.querySelector('#turn'),
+      resetBtn: document.querySelector('#reset'),
+      undoBtn: document.querySelector('#undo'),
+      controller
+      commands
+    });
+
+    // Expose for console testing:
+    window.c4 = controller;
+    window.PlaceDisc = PlaceDisc;
+  </script>
 </body>
 </html>
