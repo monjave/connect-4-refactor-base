@@ -5,7 +5,7 @@ import { Events } from './events.js';
  * DOM-only View. No game rules here.
  */
 export class BoardView {
-  constructor({ root, titleEl, p1El, p2El, turnEl, resetBtn, undoBtn, controller, commands }) {
+  constructor({ root, titleEl, p1El, p2El, turnEl, resetBtn, undoBtn, redoBtn, controller, commands }) {
     this.root = root; 
     this.titleEl = titleEl;
     this.p1El = p1El; 
@@ -13,6 +13,7 @@ export class BoardView {
     this.turnEl = turnEl;
     this.resetBtn = resetBtn; 
     this.undoBtn = undoBtn; 
+    this.redoBtn = redoBtn;
     this.controller = controller;
     this.commands = commands;
 
@@ -72,6 +73,16 @@ export class BoardView {
         this.commands.undo();
       } else {
         console.warn('Undo not implemented yet');
+      }
+    });
+  }
+
+  if (this.redoBtn) {
+    this.redoBtn.addEventListener('click', () => {
+      if (this.commands?.redo) {
+        this.commands.redo();
+      } else {
+        console.warn('Redo not implemented yet');
       }
     });
   }
