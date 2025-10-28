@@ -20,7 +20,23 @@ export class BoardView {
     this._listeners = new Map();
 
     this.p1 = +(localStorage.getItem('c4:p1')||0);
-    this.p2 = +(localStorage.getItem('c4:p2')||0);
+    this.p2 = +(localStorage.getItem('c4:p2') || 0);
+    
+    this._handlers = {
+      moved: ({ row, col, player }) => this._place(row, col, player),
+      won: ({ player }) => this._won(player),
+      tie: () => this._tie(),
+      turnChanged: ({ player }) => this._updateTurn(player),
+      reset: () => this._resetBoard(),
+      undone: ({ row, col }) => this._clearCell(row, col),
+    };
+
+    this.controller.on(Events.Moved, this._handlers.moved);
+    this.controller.on(Events.Won, this._handlers.won);
+    this.controller.on(Events.Tie, this._handlers.tie);
+    this.controller.on(Events.TurnChanged, this._handlers.turnChanged);
+    this.controller.on(Events.Reset, this._handlers.reset);
+    this.controller.on(Events.Undone, this._handlers.undone);
 
     this._renderStatic();
     this._wireEvents();
@@ -81,7 +97,6 @@ export class BoardView {
     const colEl = e.target.closest('.col');
     if (!colEl) return;
     const col = +colEl.dataset.col;
-    // Tyler will implement this later
     if (this.commands?.executePlace) {
       this.commands.executePlace(col);
     } else {
@@ -116,14 +131,6 @@ export class BoardView {
       }
     });
   }
-
-    // subscribe to controller events
-    this.controller.on(Events.Moved, ({row, col, player}) => this._place(row, col, player));
-    this.controller.on(Events.Won, ({player}) => this._won(player));
-    this.controller.on(Events.Tie, () => this._tie());
-    this.controller.on(Events.TurnChanged, ({player}) => this._updateTurn(player));
-    this.controller.on(Events.Reset, () => this._resetBoard());
-    this.controller.on(Events.Undone, ({row, col}) => this._clearCell(row, col));
   }
 
   _place(row, col, player){
