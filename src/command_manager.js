@@ -7,7 +7,6 @@ export class CommandManager {
     this.history = new CommandHistory();
   }
 
-  // placeholder methods (do nothing for now)
   executePlace(col) {
     this.history.execute(new PlaceDisc(col, this.controller));
   }
