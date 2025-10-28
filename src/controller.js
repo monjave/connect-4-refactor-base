@@ -12,7 +12,6 @@ export class GameController {
     this.board = new Board(rows, cols);
     this.win = winStrategy;
     this.player = 1;
-    this.history = []; // stack of {row,col,player}
     this.gameOver = false;
   }
   on(evt, fn){ (this.#listeners[evt] ??= []).push(fn); }
@@ -25,7 +24,6 @@ export class GameController {
     const { row } = res;
 
     const move = { row, col, player: this.player };
-    this.history.push(move);
     this.#emit(Events.Moved, move);
 
     if (this.win?.won(this.board, row, col, this.player)) {
@@ -64,7 +62,6 @@ export class GameController {
   reset(){
     this.board.clear();
     this.player = 1;
-    this.history = [];
     this.gameOver = false;
     this.#emit(Events.Reset, {});
     this.#emit(Events.TurnChanged, { player: this.player });
